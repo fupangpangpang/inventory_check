@@ -196,6 +196,37 @@
 
     async function saveToGithub(actionType = "Audit") {
         const status = document.getElementById('status-msg');
+        status.innerText = "";
+        
+        const inputs = document.querySelectorAll('#audit-list input[type="number"]');
+        let newCounts = [];
+        let allValid = true;
+
+        // --- VALIDATION STEP ---
+        inputs.forEach(input => {
+            const index = parseInt(input.dataset.index);
+            const val = parseInt(input.value.trim());
+
+            if (isNaN(val) || input.value.trim() === "") {
+                input.style.border = '2px solid var(--danger)';
+                allValid = false;
+            } else {
+                input.style.border = '1px solid #ccc';
+                newCounts.push({ index, count: val });
+            }
+        });
+
+        if (!allValid) {
+            status.innerText = "🚨 Error: Please enter a number for ALL items (use 0 if none).";
+            return; // STOP the commit process
+        }
+
+        // --- UPDATE STATE AFTER VALIDATION ---
+        newCounts.forEach(entry => {
+            state[activeProp][entry.index].current = entry.count;
+        });
+
+        // --- COMMIT PROCESS CONTINUES HERE ---
         status.innerText = "Saving to GitHub...";
         
         // Add History
@@ -230,44 +261,14 @@
                 fileSha = data.content.sha;
                 status.innerText = "✅ Saved successfully!";
                 setTimeout(() => status.innerText = "", 3000);
-                if(actionType === "Restock") {
-                    renderAudit(); // Refresh UI inputs
-                    showSection('audit');
-                }
+                // Clear inputs immediately after successful commit
+                inputs.forEach(input => input.value = ""); 
             } else {
                 status.innerText = "❌ Error saving.";
                 alert("Failed to save to GitHub.");
             }
         } catch (e) {
             status.innerText = "❌ Network Error.";
-        }
-    }
-
-    // --- UI LOGIC ---
-    function switchProp(prop) {
-        activeProp = prop;
-        document.querySelectorAll('.prop-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById('btn-' + prop).classList.add('active');
-        renderAudit();
-        renderShopping();
-    }
-
-    function showSection(section) {
-        document.getElementById('section-audit').classList.add('hidden');
-        document.getElementById('section-shop').classList.add('hidden');
-        document.getElementById('section-' + section).classList.remove('hidden');
-        
-        // Update tab styles
-        document.getElementById('tab-audit').classList.remove('btn-primary', 'btn-outline');
-        document.getElementById('tab-shop').classList.remove('btn-primary', 'btn-outline');
-        
-        if(section === 'audit') {
-            document.getElementById('tab-audit').classList.add('btn-primary');
-            document.getElementById('tab-shop').classList.add('btn-outline');
-        } else {
-            renderShopping(); // Recalculate whenever showing tab
-            document.getElementById('tab-shop').classList.add('btn-primary');
-            document.getElementById('tab-audit').classList.add('btn-outline');
         }
     }
 
@@ -278,18 +279,22 @@
         state[activeProp].forEach((item, index) => {
             const div = document.createElement('div');
             div.className = 'input-row';
+            // Note: input value is set to "" instead of item.current
             div.innerHTML = `
                 <div>
                     <div class="item-name">${item.name}</div>
-                    <div class="item-target">Target: ${item.target}</div>
+                    <div class="item-target">Target: ${item.target}, Current: ${item.current}</div>
                 </div>
                 <input type="number" 
-                       value="${item.current}" 
-                       onchange="updateCount(${index}, this.value)"
+                       id="count-${index}"
+                       placeholder="Enter Count"
+                       value="" 
+                       data-index="${index}"
                        onfocus="this.select()"> 
             `;
             list.appendChild(div);
         });
+        document.getElementById('status-msg').innerText = "All inputs must be filled to commit.";
     }
 
     function updateCount(index, val) {
