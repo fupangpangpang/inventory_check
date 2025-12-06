@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Property Inventory</title>
+    <style>
+        :root { --primary: #007AFF; --bg: #F2F2F7; --card: #ffffff; --danger: #FF3B30; }
+        body { font-family: -apple-system, sans-serif; background: var(--bg); margin: 0; padding-bottom: 50px; -webkit-tap-highlight-color: transparent; }
+        
+        /* Navigation */
+        .navbar { background: var(--card); padding: 15px; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid #ccc; display: flex; justify-content: space-between; align-items: center; }
+        .nav-title { font-weight: bold; font-size: 1.1rem; }
+        
+        /* Property Switcher */
+        .prop-switcher { display: flex; padding: 10px; gap: 10px; justify-content: center; background: #e5e5ea; }
+        .prop-btn { flex: 1; border: none; padding: 10px; border-radius: 8px; font-weight: 600; background: #d1d1d6; color: #666; cursor: pointer; transition: 0.2s; }
+        .prop-btn.active { background: var(--primary); color: white; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+
+        /* Content */
+        .container { padding: 15px; max-width: 600px; margin: 0 auto; }
+        .card { background: var(--card); border-radius: 12px; padding: 15px; margin-bottom: 15px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        
+        /* Inputs */
+        .input-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #eee; }
+        .input-row:last-child { border-bottom: none; }
+        .item-name { font-weight: 500; font-size: 1rem; }
+        .item-target { font-size: 0.8rem; color: #888; }
+        
+        input[type="number"] { width: 60px; padding: 8px; border: 1px solid #ccc; border-radius: 8px; font-size: 1.2rem; text-align: center; -moz-appearance: textfield; }
+        
+        /* Buttons */
+        .btn { width: 100%; padding: 15px; border: none; border-radius: 12px; font-size: 1rem; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-outline { background: transparent; border: 2px solid var(--primary); color: var(--primary); }
+        
+        /* Shopping List */
+        .shop-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; }
+        .shop-qty { font-weight: bold; color: var(--danger); }
+
+        /* Status */
+        #status-msg { text-align: center; font-size: 0.9rem; margin-top: 10px; color: #666; min-height: 20px; }
+        
+        /* Setup Modal */
+        #setup-modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 1000; display: flex; align-items: center; justify-content: center; }
+        .modal-content { background: white; padding: 20px; border-radius: 12px; width: 85%; max-width: 400px; }
+        .modal-input { width: 100%; padding: 10px; margin: 5px 0 15px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 8px; }
+
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+<div id="setup-modal" class="hidden">
+    <div class="modal-content">
+        <h2>Connect GitHub</h2>
+        <p>Enter your details to sync data.</p>
+        <label>GitHub Username</label>
+        <input type="text" id="gh-user" class="modal-input" placeholder="e.g. johndoe">
+        <label>Repository Name</label>
+        <input type="text" id="gh-repo" class="modal-input" placeholder="e.g. inventory-tracker">
+        <label>Personal Access Token</label>
+        <input type="password" id="gh-token" class="modal-input" placeholder="ghp_..." >
+        <button class="btn btn-primary" onclick="saveConfig()">Connect</button>
+    </div>
+</div>
+
+<div class="navbar">
+    <div class="nav-title">Inventory Tracker</div>
+    <button onclick="clearConfig()" style="background:none; border:none; color:#007AFF; font-size:0.8rem;">Settings</button>
+</div>
+
+<div class="prop-switcher">
+    <button class="prop-btn active" onclick="switchProp('2804')" id="btn-2804">Property 2804</button>
+    <button class="prop-btn" onclick="switchProp('3011')" id="btn-3011">Property 3011</button>
+</div>
+
+<div class="container">
+    <div id="loading" class="hidden" style="text-align:center; padding:20px;">Loading data from GitHub...</div>
+
+    <div style="display:flex; gap:10px; margin-bottom:15px;">
+        <button class="btn btn-primary" onclick="showSection('audit')" id="tab-audit" style="flex:1;">Inventory Check</button>
+        <button class="btn btn-outline" onclick="showSection('shop')" id="tab-shop" style="flex:1;">Shopping List</button>
+    </div>
+
+    <div id="section-audit">
+        <div class="card" id="audit-list">
+            </div>
+        <button class="btn btn-primary" onclick="saveToGithub()">Commit Inventory Check</button>
+    </div>
+
+    <div id="section-shop" class="hidden">
+        <div class="card">
+            <h3>To Buy</h3>
+            <div id="shopping-list-content"></div>
+        </div>
+        <button class="btn btn-primary" onclick="markRestocked()">Mark All Purchased (Restock)</button>
+    </div>
+
+    <div id="status-msg"></div>
+</div>
+
+<script>
+    // --- CONFIGURATION ---
+    const FILE_NAME = "inventory_data.json";
+    
+    // Default Template based on your screenshot
+    const DEFAULT_ITEMS = [
+        { name: "Toilet Paper (rolls)", target: 60 },
+        { name: "Paper Towel (rolls)", target: 20 },
+        { name: "Hand Soap (bottle)", target: 10 },
+        { name: "Body Wash (bottles)", target: 10 },
+        { name: "Shampoo (bottles)", target: 10 },
+        { name: "Utensils (bag)", target: 2 },
+        { name: "Coffee Pod (drawer)", target: 1 },
+        { name: "Sugar (drawer)", target: 1 },
+        { name: "Creamer (drawer)", target: 1 },
+        { name: "13 gal Trash Bags (rolls)", target: 4 },
+        { name: "Small Trash Bags (rolls)", target: 4 },
+        { name: "Klenex (box)", target: 20 },
+        { name: "Detergent (box)", target: 1 },
+        { name: "Clorox Zero splash (bottle)", target: 1 }
+    ];
+
+    let state = {
+        "2804": JSON.parse(JSON.stringify(DEFAULT_ITEMS)).map(i => ({...i, current: 0})),
+        "3011": JSON.parse(JSON.stringify(DEFAULT_ITEMS)).map(i => ({...i, current: 0})),
+        "history": []
+    };
+
+    let activeProp = "2804";
+    let fileSha = null; // Needed for GitHub API updates
+    let config = JSON.parse(localStorage.getItem('gh_config'));
+
+    // --- INITIALIZATION ---
+    window.onload = function() {
+        if (!config) {
+            document.getElementById('setup-modal').classList.remove('hidden');
+        } else {
+            fetchData();
+        }
+    };
+
+    function saveConfig() {
+        const user = document.getElementById('gh-user').value.trim();
+        const repo = document.getElementById('gh-repo').value.trim();
+        const token = document.getElementById('gh-token').value.trim();
+        if(user && repo && token) {
+            localStorage.setItem('gh_config', JSON.stringify({user, repo, token}));
+            config = {user, repo, token};
+            document.getElementById('setup-modal').classList.add('hidden');
+            fetchData();
+        }
+    }
+
+    function clearConfig() {
+        if(confirm("Reset connection details?")) {
+            localStorage.removeItem('gh_config');
+            location.reload();
+        }
+    }
+
+    // --- GITHUB API INTERACTION ---
+    async function fetchData() {
+        document.getElementById('loading').classList.remove('hidden');
+        const url = `https://api.github.com/repos/${config.user}/${config.repo}/contents/${FILE_NAME}`;
+        
+        try {
+            const response = await fetch(url, {
+                headers: { 
+                    'Authorization': `token ${config.token}`,
+                    'Accept': 'application/vnd.github.v3+json'
+                }
+            });
+
+            if (response.status === 404) {
+                // File doesn't exist yet, use default state
+                console.log("New file will be created on first save.");
+            } else if (response.ok) {
+                const data = await response.json();
+                fileSha = data.sha;
+                // Decode Base64 content
+                const content = decodeURIComponent(escape(window.atob(data.content)));
+                state = JSON.parse(content);
+            } else {
+                alert("Error fetching data. Check your GitHub settings.");
+            }
+        } catch (e) {
+            console.error(e);
+            alert("Connection error.");
+        }
+        
+        document.getElementById('loading').classList.add('hidden');
+        renderAudit();
+    }
+
+    async function saveToGithub(actionType = "Audit") {
+        const status = document.getElementById('status-msg');
+        status.innerText = "Saving to GitHub...";
+        
+        // Add History
+        state.history.push({
+            date: new Date().toISOString(),
+            property: activeProp,
+            action: actionType,
+            snapshot: JSON.parse(JSON.stringify(state[activeProp])) // Save copy of counts
+        });
+
+        const content = btoa(unescape(encodeURIComponent(JSON.stringify(state, null, 2))));
+        const url = `https://api.github.com/repos/${config.user}/${config.repo}/contents/${FILE_NAME}`;
+        
+        const body = {
+            message: `Update ${activeProp}: ${actionType}`,
+            content: content
+        };
+        if (fileSha) body.sha = fileSha;
+
+        try {
+            const response = await fetch(url, {
+                method: 'PUT',
+                headers: { 
+                    'Authorization': `token ${config.token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(body)
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                fileSha = data.content.sha;
+                status.innerText = "✅ Saved successfully!";
+                setTimeout(() => status.innerText = "", 3000);
+                if(actionType === "Restock") {
+                    renderAudit(); // Refresh UI inputs
+                    showSection('audit');
+                }
+            } else {
+                status.innerText = "❌ Error saving.";
+                alert("Failed to save to GitHub.");
+            }
+        } catch (e) {
+            status.innerText = "❌ Network Error.";
+        }
+    }
+
+    // --- UI LOGIC ---
+    function switchProp(prop) {
+        activeProp = prop;
+        document.querySelectorAll('.prop-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById('btn-' + prop).classList.add('active');
+        renderAudit();
+        renderShopping();
+    }
+
+    function showSection(section) {
+        document.getElementById('section-audit').classList.add('hidden');
+        document.getElementById('section-shop').classList.add('hidden');
+        document.getElementById('section-' + section).classList.remove('hidden');
+        
+        // Update tab styles
+        document.getElementById('tab-audit').classList.remove('btn-primary', 'btn-outline');
+        document.getElementById('tab-shop').classList.remove('btn-primary', 'btn-outline');
+        
+        if(section === 'audit') {
+            document.getElementById('tab-audit').classList.add('btn-primary');
+            document.getElementById('tab-shop').classList.add('btn-outline');
+        } else {
+            renderShopping(); // Recalculate whenever showing tab
+            document.getElementById('tab-shop').classList.add('btn-primary');
+            document.getElementById('tab-audit').classList.add('btn-outline');
+        }
+    }
+
+    function renderAudit() {
+        const list = document.getElementById('audit-list');
+        list.innerHTML = '';
+        
+        state[activeProp].forEach((item, index) => {
+            const div = document.createElement('div');
+            div.className = 'input-row';
+            div.innerHTML = `
+                <div>
+                    <div class="item-name">${item.name}</div>
+                    <div class="item-target">Target: ${item.target}</div>
+                </div>
+                <input type="number" 
+                       value="${item.current}" 
+                       onchange="updateCount(${index}, this.value)"
+                       onfocus="this.select()"> 
+            `;
+            list.appendChild(div);
+        });
+    }
+
+    function updateCount(index, val) {
+        state[activeProp][index].current = parseInt(val) || 0;
+    }
+
+    function renderShopping() {
+        const list = document.getElementById('shopping-list-content');
+        list.innerHTML = '';
+        let neededCount = 0;
+
+        state[activeProp].forEach(item => {
+            const needed = item.target - item.current;
+            if (needed > 0) {
+                neededCount++;
+                const div = document.createElement('div');
+                div.className = 'shop-item';
+                div.innerHTML = `<span>${item.name}</span> <span class="shop-qty">Buy ${needed}</span>`;
+                list.appendChild(div);
+            }
+        });
+
+        if (neededCount === 0) {
+            list.innerHTML = '<div style="text-align:center; color:#888; padding:20px;">Fully Stocked!</div>';
+        }
+    }
+
+    function markRestocked() {
+        if(!confirm(`Mark all items for Property ${activeProp} as purchased?`)) return;
+        
+        // Update all current to target
+        state[activeProp].forEach(item => {
+            if(item.current < item.target) {
+                item.current = item.target;
+            }
+        });
+        
+        saveToGithub("Restock");
+    }
+
+</script>
+</body>
+</html>
