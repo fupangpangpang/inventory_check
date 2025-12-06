@@ -3,7 +3,7 @@
     {
       "name": "Toilet Paper (rolls)",
       "target": 60,
-      "current": 26
+      "current": 56
     },
     {
       "name": "Paper Towel (rolls)",
@@ -23,7 +23,7 @@
     {
       "name": "Shampoo (bottles)",
       "target": 10,
-      "current": 2
+      "current": 5
     },
     {
       "name": "Utensils (bag)",
@@ -404,6 +404,83 @@
           "name": "Shampoo (bottles)",
           "target": 10,
           "current": 2
+        },
+        {
+          "name": "Utensils (bag)",
+          "target": 2,
+          "current": 1
+        },
+        {
+          "name": "Coffee Pod (drawer)",
+          "target": 1,
+          "current": 1
+        },
+        {
+          "name": "Sugar (drawer)",
+          "target": 1,
+          "current": 1
+        },
+        {
+          "name": "Creamer (drawer)",
+          "target": 1,
+          "current": 0
+        },
+        {
+          "name": "13 gal Trash Bags (rolls)",
+          "target": 4,
+          "current": 1
+        },
+        {
+          "name": "Small Trash Bags (rolls)",
+          "target": 4,
+          "current": 4
+        },
+        {
+          "name": "Klenex (box)",
+          "target": 20,
+          "current": 26
+        },
+        {
+          "name": "Detergent (box)",
+          "target": 1,
+          "current": 1
+        },
+        {
+          "name": "Clorox Zero splash (bottle)",
+          "target": 1,
+          "current": 1
+        }
+      ]
+    },
+    {
+      "date": "2025-12-06T19:45:43.808Z",
+      "property": "2804",
+      "action": "Audit",
+      "snapshot": [
+        {
+          "name": "Toilet Paper (rolls)",
+          "target": 60,
+          "current": 56
+        },
+        {
+          "name": "Paper Towel (rolls)",
+          "target": 20,
+          "current": 17
+        },
+        {
+          "name": "Hand Soap (bottle)",
+          "target": 10,
+          "current": 14
+        },
+        {
+          "name": "Body Wash (bottles)",
+          "target": 10,
+          "current": 4
+        },
+        {
+          "name": "Shampoo (bottles)",
+          "target": 10,
+          "current": 5
         },
         {
           "name": "Utensils (bag)",
