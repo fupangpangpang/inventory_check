@@ -335,6 +335,47 @@
         saveToGithub("Restock");
     }
 
+    function switchProp(prop) {
+        activeProp = prop;
+        // 1. Update Property Buttons
+        document.querySelectorAll('.prop-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById('btn-' + prop).classList.add('active');
+        
+        // 2. Refresh the currently visible section
+        const isAuditActive = !document.getElementById('section-audit').classList.contains('hidden');
+        
+        if (isAuditActive) {
+            // If the Audit tab is visible, re-render the audit list
+            renderAudit();
+        } else {
+            // Otherwise, re-render the shopping list
+            renderShopping();
+        }
+    }
+
+    function showSection(section) {
+        // 1. Hide all sections
+        document.getElementById('section-audit').classList.add('hidden');
+        document.getElementById('section-shop').classList.add('hidden');
+        
+        // 2. Show the target section
+        document.getElementById('section-' + section).classList.remove('hidden');
+        
+        // 3. Update tab styles
+        document.getElementById('tab-audit').classList.remove('btn-primary', 'btn-outline');
+        document.getElementById('tab-shop').classList.remove('btn-primary', 'btn-outline');
+        
+        if(section === 'audit') {
+            document.getElementById('tab-audit').classList.add('btn-primary');
+            document.getElementById('tab-shop').classList.add('btn-outline');
+            renderAudit(); // Re-render audit to ensure clear inputs are visible
+        } else {
+            document.getElementById('tab-shop').classList.add('btn-primary');
+            document.getElementById('tab-audit').classList.add('btn-outline');
+            renderShopping(); // Crucial: Re-render the shopping list content
+        }
+    }
+
 </script>
 </body>
 </html>
