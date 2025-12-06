@@ -1,0 +1,225 @@
+{
+  "2804": [
+    {
+      "name": "Toilet Paper (rolls)",
+      "target": 60,
+      "current": 30
+    },
+    {
+      "name": "Paper Towel (rolls)",
+      "target": 20,
+      "current": 0
+    },
+    {
+      "name": "Hand Soap (bottle)",
+      "target": 10,
+      "current": 0
+    },
+    {
+      "name": "Body Wash (bottles)",
+      "target": 10,
+      "current": 0
+    },
+    {
+      "name": "Shampoo (bottles)",
+      "target": 10,
+      "current": 0
+    },
+    {
+      "name": "Utensils (bag)",
+      "target": 2,
+      "current": 0
+    },
+    {
+      "name": "Coffee Pod (drawer)",
+      "target": 1,
+      "current": 0
+    },
+    {
+      "name": "Sugar (drawer)",
+      "target": 1,
+      "current": 0
+    },
+    {
+      "name": "Creamer (drawer)",
+      "target": 1,
+      "current": 0
+    },
+    {
+      "name": "13 gal Trash Bags (rolls)",
+      "target": 4,
+      "current": 0
+    },
+    {
+      "name": "Small Trash Bags (rolls)",
+      "target": 4,
+      "current": 0
+    },
+    {
+      "name": "Klenex (box)",
+      "target": 20,
+      "current": 0
+    },
+    {
+      "name": "Detergent (box)",
+      "target": 1,
+      "current": 0
+    },
+    {
+      "name": "Clorox Zero splash (bottle)",
+      "target": 1,
+      "current": 0
+    }
+  ],
+  "3011": [
+    {
+      "name": "Toilet Paper (rolls)",
+      "target": 60,
+      "current": 0
+    },
+    {
+      "name": "Paper Towel (rolls)",
+      "target": 20,
+      "current": 0
+    },
+    {
+      "name": "Hand Soap (bottle)",
+      "target": 10,
+      "current": 0
+    },
+    {
+      "name": "Body Wash (bottles)",
+      "target": 10,
+      "current": 0
+    },
+    {
+      "name": "Shampoo (bottles)",
+      "target": 10,
+      "current": 0
+    },
+    {
+      "name": "Utensils (bag)",
+      "target": 2,
+      "current": 0
+    },
+    {
+      "name": "Coffee Pod (drawer)",
+      "target": 1,
+      "current": 0
+    },
+    {
+      "name": "Sugar (drawer)",
+      "target": 1,
+      "current": 0
+    },
+    {
+      "name": "Creamer (drawer)",
+      "target": 1,
+      "current": 0
+    },
+    {
+      "name": "13 gal Trash Bags (rolls)",
+      "target": 4,
+      "current": 0
+    },
+    {
+      "name": "Small Trash Bags (rolls)",
+      "target": 4,
+      "current": 0
+    },
+    {
+      "name": "Klenex (box)",
+      "target": 20,
+      "current": 0
+    },
+    {
+      "name": "Detergent (box)",
+      "target": 1,
+      "current": 0
+    },
+    {
+      "name": "Clorox Zero splash (bottle)",
+      "target": 1,
+      "current": 0
+    }
+  ],
+  "history": [
+    {
+      "date": "2025-12-06T04:19:10.616Z",
+      "property": "2804",
+      "action": "Audit",
+      "snapshot": [
+        {
+          "name": "Toilet Paper (rolls)",
+          "target": 60,
+          "current": 30
+        },
+        {
+          "name": "Paper Towel (rolls)",
+          "target": 20,
+          "current": 0
+        },
+        {
+          "name": "Hand Soap (bottle)",
+          "target": 10,
+          "current": 0
+        },
+        {
+          "name": "Body Wash (bottles)",
+          "target": 10,
+          "current": 0
+        },
+        {
+          "name": "Shampoo (bottles)",
+          "target": 10,
+          "current": 0
+        },
+        {
+          "name": "Utensils (bag)",
+          "target": 2,
+          "current": 0
+        },
+        {
+          "name": "Coffee Pod (drawer)",
+          "target": 1,
+          "current": 0
+        },
+        {
+          "name": "Sugar (drawer)",
+          "target": 1,
+          "current": 0
+        },
+        {
+          "name": "Creamer (drawer)",
+          "target": 1,
+          "current": 0
+        },
+        {
+          "name": "13 gal Trash Bags (rolls)",
+          "target": 4,
+          "current": 0
+        },
+        {
+          "name": "Small Trash Bags (rolls)",
+          "target": 4,
+          "current": 0
+        },
+        {
+          "name": "Klenex (box)",
+          "target": 20,
+          "current": 0
+        },
+        {
+          "name": "Detergent (box)",
+          "target": 1,
+          "current": 0
+        },
+        {
+          "name": "Clorox Zero splash (bottle)",
+          "target": 1,
+          "current": 0
+        }
+      ]
+    }
+  ]
+}
