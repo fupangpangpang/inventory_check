@@ -75,27 +75,27 @@
     {
       "name": "Toilet Paper (rolls)",
       "target": 60,
-      "current": 24
+      "current": 79
     },
     {
       "name": "Paper Towel (rolls)",
       "target": 20,
-      "current": 7
+      "current": 19
     },
     {
       "name": "Hand Soap (bottle)",
       "target": 10,
-      "current": 6
+      "current": 14
     },
     {
       "name": "Body Wash (bottles)",
       "target": 10,
-      "current": 3
+      "current": 11
     },
     {
       "name": "Shampoo (bottles)",
       "target": 10,
-      "current": 6
+      "current": 9
     },
     {
       "name": "Utensils (bag)",
@@ -120,7 +120,7 @@
     {
       "name": "13 gal Trash Bags (rolls)",
       "target": 4,
-      "current": 0
+      "current": 4
     },
     {
       "name": "Small Trash Bags (rolls)",
@@ -130,12 +130,12 @@
     {
       "name": "Klenex (box)",
       "target": 20,
-      "current": 6
+      "current": 18
     },
     {
       "name": "Detergent (box)",
       "target": 1,
-      "current": 0
+      "current": 2
     },
     {
       "name": "Clorox Zero splash (bottle)",
@@ -1445,6 +1445,83 @@
           "name": "Detergent (box)",
           "target": 1,
           "current": 0
+        },
+        {
+          "name": "Clorox Zero splash (bottle)",
+          "target": 1,
+          "current": 0
+        }
+      ]
+    },
+    {
+      "date": "2026-04-05T14:39:24.946Z",
+      "property": "3011",
+      "action": "Audit",
+      "snapshot": [
+        {
+          "name": "Toilet Paper (rolls)",
+          "target": 60,
+          "current": 79
+        },
+        {
+          "name": "Paper Towel (rolls)",
+          "target": 20,
+          "current": 19
+        },
+        {
+          "name": "Hand Soap (bottle)",
+          "target": 10,
+          "current": 14
+        },
+        {
+          "name": "Body Wash (bottles)",
+          "target": 10,
+          "current": 11
+        },
+        {
+          "name": "Shampoo (bottles)",
+          "target": 10,
+          "current": 9
+        },
+        {
+          "name": "Utensils (bag)",
+          "target": 2,
+          "current": 2
+        },
+        {
+          "name": "Coffee Pod (drawer)",
+          "target": 1,
+          "current": 0
+        },
+        {
+          "name": "Sugar (drawer)",
+          "target": 1,
+          "current": 2
+        },
+        {
+          "name": "Creamer (drawer)",
+          "target": 1,
+          "current": 0
+        },
+        {
+          "name": "13 gal Trash Bags (rolls)",
+          "target": 4,
+          "current": 4
+        },
+        {
+          "name": "Small Trash Bags (rolls)",
+          "target": 4,
+          "current": 0
+        },
+        {
+          "name": "Klenex (box)",
+          "target": 20,
+          "current": 18
+        },
+        {
+          "name": "Detergent (box)",
+          "target": 1,
+          "current": 2
         },
         {
           "name": "Clorox Zero splash (bottle)",
